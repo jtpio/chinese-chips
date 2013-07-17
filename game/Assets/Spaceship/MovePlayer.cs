@@ -4,46 +4,31 @@ using System.Collections.Generic;
 
 public class MovePlayer : MonoBehaviour {
 	
-	public float speed;
+	public float initSpeed;
 	public float sideSpeed;
+	public Vector3 yOffset;
 	public static Vector3 position;
 	
-	protected RoadManager roadManager;
-	protected float time;
-	protected Vector3 prevPos;
-	protected Quaternion prevRot;
-	protected float offset;
-	
 	void Start () {
-		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
-		time = 0;
-		offset = 0;
-		prevPos = transform.position;
+		yOffset = new Vector3(0.0f, 0.2f, 0.0f);
 	}
 	
 	void Update () {
-		time += Time.deltaTime * speed;
+		float speed = initSpeed * Time.deltaTime;
+		transform.Translate(transform.forward * speed);
 		
-		SplinePos currPos = roadManager.GetPositonAtTime(time);
-		Vector3 direction = currPos.point - prevPos;
-		Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
-		
-		if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-			offset -=  sideSpeed;
+		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q)) {
+			transform.Translate(-transform.right * sideSpeed);
 		}
 		
-		if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-			offset += sideSpeed;
+		if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
+			transform.Translate(transform.right * sideSpeed);
 		}
 		
-		rotation = Quaternion.Slerp(transform.rotation, rotation, 0.5f);
-		
-		transform.position = prevPos + transform.up * 0.2f;
-		transform.rotation = rotation;
-		prevPos = currPos.point;
-		prevRot = rotation;
-		
-		roadManager.Recycle(time);
 		position = transform.position;
+	}
+	
+	public void SetPosition(Vector3 pos) {
+		transform.position = pos + yOffset;	
 	}
 }
