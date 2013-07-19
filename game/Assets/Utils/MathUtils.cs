@@ -28,4 +28,16 @@ public class MathUtils {
 		return Quaternion.AngleAxis(RandomSign() * 90, Vector3.up) * direction;
 	}
 	
+	public static Vector3 RotateLeft(Vector3 direction) {
+		return Rotate90(direction, -1);
+	}
+	
+	public static Vector3 RotateRight(Vector3 direction) {
+		return Rotate90(direction, 1);
+	}
+	
+	public static Vector3 Rotate90(Vector3 direction, int sign) {
+		return Quaternion.AngleAxis(sign * 90, Vector3.up) * direction;
+	}
+	
 }

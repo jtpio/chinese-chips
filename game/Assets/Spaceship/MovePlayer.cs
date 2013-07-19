@@ -19,7 +19,6 @@ public class MovePlayer : MonoBehaviour {
 	protected RoadManager roadManager;
 	
 	void Start () {
-		yOffset = new Vector3(0.0f, 0.2f, 0.0f);
 		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
 		time = 0;
 		direction = transform.forward;

@@ -5,8 +5,11 @@ using Utils;
 
 public class RoadManager : MonoBehaviour {
 	
-	public Transform roadPrefab;
+	// prefab
+	public Transform roadStraightPrefab;
+	public Transform roadTurnPrefab;
 	public Transform portalPrefab;
+	
 	public int timeStep;
 	public int roadSegmentLength;
 	public int nbSegments;
@@ -18,15 +21,15 @@ public class RoadManager : MonoBehaviour {
 	protected Vector3 spawningPoint;
 	protected Vector3 direction;
 	protected float nodeTime;
+	protected Vector3 roadTileSize;
 	
 	protected LinkedListNode<Node> playerNode;
 	protected LinkedListNode<Node> middleNode;
-	protected TimeDirection timeDirection;
 	
 	void Awake() {
 		settings = GameObject.Find("GameStuff").GetComponent<Settings>();
 		movePlayer = GameObject.Find("Player").GetComponent<MovePlayer>();
-		timeDirection = new TimeDirection();
+		roadTileSize = roadStraightPrefab.FindChild("baseSquare").renderer.bounds.size + new Vector3(0,0,10);
 	}
 	
 	void Start () {
@@ -57,103 +60,58 @@ public class RoadManager : MonoBehaviour {
 		playerNode = roadNodes.First;
 		middleNode = roadNodes.First;
 		ShiftMiddleNode(roadNodes.Count / 2);
-		
-		/*
-		roadTransforms = new LinkedList<Transform>();
-		spawningPoint = new Vector3(0,0,0);
-		roadPoints = new List<Node>();
-		distance = 0;
-		playerPos = 0;
-		Vector3 size = roadPrefab.renderer.bounds.size;
-		
-		/*
-		for (int i = 0; i < 10; i++) {
-			Instantiate(roadPrefab, spawningPoint, Quaternion.identity);
-			spawningPoint += Vector3.Scale(size, Vector3.forward);
-		}
-		
-		Transform inPortal = Instantiate(portalPrefab, spawningPoint - Vector3.Scale(size, Vector3.forward), Quaternion.identity) as Transform;
-		Teleport tpIN = inPortal.gameObject.AddComponent<Teleport>();
-		spawningPoint += 5 * Vector3.up;
-		Transform outPortal = Instantiate(portalPrefab, spawningPoint, Quaternion.identity) as Transform;
-		tpIN.outPortal = outPortal;
-		
-		for (int i = 0; i < 10; i++) {
-			Instantiate(roadPrefab, spawningPoint, Quaternion.identity);
-			spawningPoint += Vector3.Scale(size, Vector3.forward);
-		}
-		
-		
-		Vector3 direction = Vector3.forward;
-		
-		for (int i = 0; i < nbSegments; i++) {
-			for (int j = 0; j < roadSegmentLength; j++) {
-				Instantiate(roadPrefab, spawningPoint, Quaternion.identity);
-				roadPoints.Add(new Node(spawningPoint, direction, distance));
-				Step (size, direction);
-			}
-			
-			if (MathUtils.RandomBool()) {
-				Transform inPortal = Instantiate(portalPrefab, spawningPoint, Quaternion.LookRotation(direction)) as Transform;
-				Teleport tpIN = inPortal.gameObject.AddComponent<Teleport>();
-				spawningPoint += MathUtils.RandomSign() * 5 * Vector3.up;
-				Transform outPortal = Instantiate(portalPrefab, spawningPoint, Quaternion.LookRotation(direction)) as Transform;
-				tpIN.outPortal = outPortal;
-				Step (size, direction);
-			} else {
-				direction = MathUtils.RandomTurn(direction);
-				
-//				if (MathUtils.RandomChance(30)) {
-//					spawningPoint += MathUtils.RandomSign() * 5 * Vector3.up;
-//				}
-			}
-		}
-		
-		*/	
 	}
 	
 	protected int GenerateSegments() {
 		int nbGenerated = 0;
-		Vector3 size = roadPrefab.renderer.bounds.size;
 		for (int i = 0; i < nbSegments; i++) {
 			for (int j = 0; j < roadSegmentLength; j++) {
-				Transform transform = Instantiate(roadPrefab, spawningPoint, Quaternion.identity) as Transform;
+				Transform transform = Instantiate(roadStraightPrefab, spawningPoint, Quaternion.LookRotation(direction)) as Transform;
 				Node node = new Node(spawningPoint, direction, nodeTime, transform, NodeType.Normal);
 				roadNodes.AddLast(node);
 				nbGenerated++;
 				//if (MathUtils.RandomBool()) transform.renderer.enabled = false;
-				StepForward(direction, size);
-				nodeTime += size.x;
+				StepForward(direction, roadTileSize);
+				nodeTime += roadTileSize.z;
 			}
 			
 			
 			bool turn = MathUtils.RandomBool();
 			if (turn) { // turn
-				direction = MathUtils.RandomTurn(direction);
-				Transform transform = Instantiate(roadPrefab, spawningPoint, Quaternion.identity) as Transform;
+				bool left = MathUtils.RandomBool();
+				Vector3 prefabOrientation = direction;
+				if (left) {
+					direction = MathUtils.RotateLeft(direction);
+					prefabOrientation = direction;
+				} else {
+					direction = MathUtils.RotateRight(direction);
+					prefabOrientation = MathUtils.RotateRight(direction);
+				}
+				Transform transform = Instantiate(roadTurnPrefab, spawningPoint, Quaternion.LookRotation(prefabOrientation)) as Transform;
+				//transform.rotation = Quaternion.AngleAxis(180, Vector3.up);
 				NodeType type = (turn)?NodeType.Left:NodeType.Right;
 				Node node = new Node(spawningPoint, direction, nodeTime, transform, type);
 				roadNodes.AddLast(node);
 				nbGenerated++;
 				//if (MathUtils.RandomBool()) transform.renderer.enabled = false;
-				StepForward(direction, size);
-				nodeTime += size.x;
+				StepForward(direction, roadTileSize);
+				nodeTime += roadTileSize.z;
 			} else {
 				Transform inPortal = Instantiate(portalPrefab, spawningPoint, Quaternion.LookRotation(direction)) as Transform;
 				Node node = new Node(spawningPoint, direction, nodeTime, inPortal, NodeType.PortalIn);
 				roadNodes.AddLast(node);
 				nbGenerated++;
 				direction = MathUtils.RandomTurn(direction);
-				StepForward(direction, size);
+				StepForward(direction, roadTileSize);
 				
 				// second portal with y offset
-				StepUpward(direction, size);
+				StepUpward(direction, roadTileSize);
 				Transform outPortal = Instantiate(portalPrefab, spawningPoint, Quaternion.LookRotation(direction)) as Transform;
 				node = new Node(spawningPoint, direction, nodeTime, outPortal, NodeType.PortalOut);
 				roadNodes.AddLast(node);
 				nbGenerated++;
-				StepForward(direction, size);
-				nodeTime += size.x;
+				StepForward(direction, roadTileSize);
+				nodeTime += roadTileSize.z;
 			}
 		}
 		
@@ -170,7 +128,7 @@ public class RoadManager : MonoBehaviour {
 	
 	public void HandlePlayer() {
 		float time = movePlayer.time;	
-		if (time > playerNode.Next.Value.time - 5) {
+		if (time > playerNode.Next.Value.time) {
 			playerNode = playerNode.Next;
 			if (playerNode.Previous.Value.type == NodeType.PortalIn) {
 				movePlayer.time = playerNode.Value.time;
