@@ -11,6 +11,6 @@ public class Animate: MonoBehaviour {
 	
 	void Update () {
 		float angle = rotateSpeed * Time.deltaTime;
-		transform.Rotate(transform.forward, angle);
+		transform.RotateAround(transform.forward, angle);
 	}
 }

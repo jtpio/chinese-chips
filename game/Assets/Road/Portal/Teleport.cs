@@ -15,7 +15,7 @@ public class Teleport : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other) {
-		Debug.Log("on collision!");
+		Debug.Log("on portal collision!");
 		if (outPortal) {
 			movePlayer.SetPosition(outPortal.transform.position);
 		}
