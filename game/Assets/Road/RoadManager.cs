@@ -40,10 +40,6 @@ public class RoadManager : MonoBehaviour {
 		HandlePlayer();
 	}
 	
-	protected void Step(Vector3 size, Vector3 direction) {
-		
-	}
-	
 	protected void ShiftMiddleNode(int offset) {
 		for (int i = 0; i < offset; i++) {
 			middleNode = middleNode.Next;
@@ -71,10 +67,11 @@ public class RoadManager : MonoBehaviour {
 				roadNodes.AddLast(node);
 				nbGenerated++;
 				//if (MathUtils.RandomBool()) transform.renderer.enabled = false;
+//				Destroy(transform.FindChild("LeftPanel0"+Random.Range(1, 4)).gameObject);
+//				Destroy(transform.FindChild("RightPanel0"+Random.Range(1, 4)).gameObject);
 				StepForward(direction, roadTileSize);
 				nodeTime += roadTileSize.z;
 			}
-			
 			
 			bool turn = MathUtils.RandomBool();
 			if (turn) { // turn
