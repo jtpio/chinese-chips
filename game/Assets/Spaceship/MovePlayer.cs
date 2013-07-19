@@ -4,46 +4,53 @@ using System.Collections.Generic;
 
 public class MovePlayer : MonoBehaviour {
 	
-	public float initSpeed;
+	// parameters
+	public float speed;
 	public float sideSpeed;
+	public float turnSpeed;
+	
+	// internals public
 	public Vector3 yOffset;
+	public float time;
+	public Vector3 direction;
+
 	public static Vector3 position;
 	
 	protected RoadManager roadManager;
-	protected Vector3 direction;
-	protected float distance;
 	
 	void Start () {
 		yOffset = new Vector3(0.0f, 0.2f, 0.0f);
 		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
-		distance = 0;
+		time = 0;
 		direction = transform.forward;
 	}
 	
 	void Update () {
-		float speed = initSpeed * Time.deltaTime;
-		Vector3 deltaPos = direction * speed;
-		transform.Translate(deltaPos, Space.World);
-		distance += deltaPos.magnitude;
-		
+		float delta = Time.deltaTime * speed;
+		time += delta;
+		transform.Translate(delta * direction, Space.World);
+
 		Quaternion newRotation = Quaternion.LookRotation(direction);
-		Quaternion rotation = Quaternion.Slerp(transform.rotation, newRotation, 0.2f);
+		Quaternion rotation = Quaternion.Slerp(transform.rotation, newRotation, turnSpeed);
 		transform.rotation = rotation;
 		
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q)) {
-			transform.Translate(-transform.right * sideSpeed);
+			transform.Translate(-transform.right * sideSpeed, Space.World);
 		}
 		
 		if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
-			transform.Translate(transform.right * sideSpeed);
+			transform.Translate(transform.right * sideSpeed, Space.World);
 		}
-		
-		direction = roadManager.GetDirectionAtDistance(distance);
-		
+
 		position = transform.position;
 	}
 	
 	public void SetPosition(Vector3 pos) {
 		transform.position = pos + yOffset;	
+	}
+	
+	public void InstantRotation(Vector3 direction) {
+		this.direction = direction;
+		transform.rotation = Quaternion.LookRotation(direction);
 	}
 }
