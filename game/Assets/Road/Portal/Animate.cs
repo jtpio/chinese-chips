@@ -4,9 +4,10 @@ using System.Collections;
 public class Animate: MonoBehaviour {
 	
 	public float rotateSpeed;
+	public Vector3 offset;
 	
 	void Start () {
-		
+		transform.position += offset;		
 	}
 	
 	void Update () {

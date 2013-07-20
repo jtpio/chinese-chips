@@ -60,7 +60,7 @@ public class MovePlayer : MonoBehaviour {
 			tiltTime -= tiltAnimationSpeed * Time.deltaTime;	
 		}
 		
-		offset = Mathf.Clamp(offset, -30, 30);
+		offset = Mathf.Clamp(offset, -maxOffset, maxOffset);
 		tiltAngle = Mathf.Clamp(tiltAngle, -maxTiltAngle, maxTiltAngle);
 		
 		tiltTime = Mathf.Clamp(tiltTime, 0, 1);

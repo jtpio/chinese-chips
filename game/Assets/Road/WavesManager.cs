@@ -11,18 +11,20 @@ public class WavesManager : MonoBehaviour {
 	public int itemsPerTile;
 	public int countdownDuration;
 	
-	// mine
-	public int nbMines;
-	public Vector3 yOffsetMine;
-
-	// prefabs
-	public Transform minePrefab;
-	public Transform coinPrefab;
+	public float speedFov;
+	
+	protected float initFov;
+	
+	// items
+	public Transform[] itemPrefabs;
+	public float[] spawnRates;
+	public int[] nbItems;
 	
 	// static
 	public static Status status;
 	
 	// protected
+	
 	protected float time;
 	protected float waveStartTime;
 	protected Countdown countdown;
@@ -38,6 +40,7 @@ public class WavesManager : MonoBehaviour {
 		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
 		lastPlayerNode = roadManager.playerNode;
 		status = Status.Rest;
+		initFov = Camera.main.fov;
 	}
 	
 	void Update () {
@@ -55,11 +58,17 @@ public class WavesManager : MonoBehaviour {
 		}
 		
 		if (inWave && lastPlayerNode != roadManager.playerNode) {
-			int nbItems = Random.Range(1, itemsPerTile+1);
-			Vector3 spawningPos = roadManager.playerNode.Next.Next.Value.position;
-			for (int i = 0; i < nbItems; i++) {
-				Vector3 itemPos = spawningPos + new Vector3(Random.Range(0, 20f), 0, Random.Range(0, 20f));
-				Instantiate(minePrefab, itemPos, Quaternion.identity);
+			Camera.main.fov = speedFov;
+			Scoring.scoring = true;
+			//for (int i = 0; i < itemPrefabs.Length; i++) {
+			if (roadManager.playerNode.Next.Next.Value.type != NodeType.PortalIn && roadManager.playerNode.Next.Next.Value.type != NodeType.PortalOut) {
+				int nbItems = 2; //Mathf.CeilToInt(spawnRates[i] * itemsPerTile);
+				int i = Random.Range(0, itemPrefabs.Length);
+				Vector3 spawningPos = roadManager.playerNode.Next.Next.Value.position;
+				for (int j = 0; j < nbItems; j++) {
+					Vector3 itemPos = spawningPos + new Vector3(Random.Range(-20f, 20f), 0, Random.Range(-20f, 20f));
+					Instantiate(itemPrefabs[i], itemPos, Quaternion.identity);
+				}
 			}
 			lastPlayerNode = roadManager.playerNode;
 		}
@@ -67,6 +76,7 @@ public class WavesManager : MonoBehaviour {
 		if (time >= waveStartTime + waveDuration) {
 			waveStartTime = waveStartTime + waveDuration + restDuration;
 			status = Status.Rest;
+			Camera.main.fov = initFov;
 		}
 	}
 }
