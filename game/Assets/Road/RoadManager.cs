@@ -53,8 +53,8 @@ public class RoadManager : MonoBehaviour {
 		direction = settings.startDirection;
 		
 		GenerateSegments();
-		playerNode = roadNodes.First;
-		middleNode = roadNodes.First;
+		playerNode = roadNodes.First.Next;
+		middleNode = roadNodes.First.Next;
 		ShiftMiddleNode(roadNodes.Count / 2);
 	}
 	
@@ -124,17 +124,21 @@ public class RoadManager : MonoBehaviour {
 	}
 	
 	public void HandlePlayer() {
-		float time = movePlayer.time;	
-		if (time > playerNode.Next.Value.time) {
+		if (roadNodes.Count < 1) return;
+		Vector3 moveVector = playerNode.Value.position - movePlayer.basePosition;
+		float dist = 2.0f;
+		if (playerNode.Value.type == NodeType.Left || playerNode.Value.type == NodeType.Right) dist = 20.0f;
+		if (moveVector.magnitude < dist) {
 			playerNode = playerNode.Next;
 			if (playerNode.Previous.Value.type == NodeType.PortalIn) {
 				movePlayer.time = playerNode.Value.time;
 				movePlayer.SetPosition(playerNode.Value.position);
 				movePlayer.InstantRotation(playerNode.Value.direction);
 			}
-			movePlayer.direction = playerNode.Value.direction;
+			//movePlayer.direction = playerNode.Value.direction;
 			Recycle();
 		}
+		movePlayer.SetMoveVector(moveVector);
 	}
 	
 	public void Recycle() {

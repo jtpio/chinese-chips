@@ -8,6 +8,7 @@ public class MovePlayer : MonoBehaviour {
 	public float speed;
 	public float sideSpeed;
 	public float turnSpeed;
+	public bool invertTilt;
 	
 	// internals public
 	public Vector3 yOffset;
@@ -17,7 +18,7 @@ public class MovePlayer : MonoBehaviour {
 	
 	public static Vector3 position;
 	
-	protected Vector3 basePosition;
+	public Vector3 basePosition;
 	protected RoadManager roadManager;
 	protected Transform ship;
 	
@@ -25,16 +26,16 @@ public class MovePlayer : MonoBehaviour {
 		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
 		ship = transform.FindChild("Ship");
 		time = 0;
-		direction = transform.forward;
+		direction = transform.forward * speed;
 		offset = 0;
 		basePosition = new Vector3(0, 0, 0);
 	}
 	
 	void Update () {
-		float delta = Time.deltaTime * speed;
-		time += delta;
 		
-		basePosition += delta * direction;
+		time += Time.deltaTime;
+		
+		basePosition += direction * Time.deltaTime;
 		//transform.Translate(delta * direction, Space.World);
 
 		Quaternion newRotation = Quaternion.LookRotation(direction);
@@ -52,12 +53,16 @@ public class MovePlayer : MonoBehaviour {
 		offset = Mathf.Clamp(offset, -20, 20);
 		
 		transform.position = basePosition + offset * transform.right + yOffset;
-		//ship.transform.rotation = Quaternion.AngleAxis(offset, transform.forward);
+		ship.transform.rotation = Quaternion.AngleAxis(((invertTilt)?-1:1) * offset, transform.forward) * transform.rotation;
 		position = transform.position;
 	}
 	
 	public void SetPosition(Vector3 pos) {
 		basePosition = pos;	
+	}
+	
+	public void SetMoveVector(Vector3 moveVector) {
+		direction = moveVector.normalized * speed;
 	}
 	
 	public void InstantRotation(Vector3 direction) {
