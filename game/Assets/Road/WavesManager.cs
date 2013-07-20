@@ -24,13 +24,11 @@ public class WavesManager : MonoBehaviour {
 	public static Status status;
 	
 	// protected
-	
 	protected float time;
 	protected float waveStartTime;
 	protected Countdown countdown;
 	protected RoadManager roadManager;
 	protected LinkedListNode<Node> lastPlayerNode;
-	
 	
 	void Start () {
 		time = 0;
@@ -54,7 +52,7 @@ public class WavesManager : MonoBehaviour {
 		}
 		
 		if (time > waveStartTime) {
-			status = Status.Wave;	
+			status = Status.Wave;
 		}
 		
 		if (inWave && lastPlayerNode != roadManager.playerNode) {
@@ -62,7 +60,7 @@ public class WavesManager : MonoBehaviour {
 			Scoring.scoring = true;
 			//for (int i = 0; i < itemPrefabs.Length; i++) {
 			if (roadManager.playerNode.Next.Next.Value.type != NodeType.PortalIn && roadManager.playerNode.Next.Next.Value.type != NodeType.PortalOut) {
-				int nbItems = 2; //Mathf.CeilToInt(spawnRates[i] * itemsPerTile);
+				int nbItems = itemsPerTile;
 				int i = Random.Range(0, itemPrefabs.Length);
 				Vector3 spawningPos = roadManager.playerNode.Next.Next.Value.position;
 				for (int j = 0; j < nbItems; j++) {

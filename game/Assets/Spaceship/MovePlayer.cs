@@ -26,6 +26,8 @@ public class MovePlayer : MonoBehaviour {
 	protected RoadManager roadManager;
 	protected Transform ship;
 	
+	protected float initSpeed;
+	
 	// tilt
 	protected float tiltAngle;
 	protected float tiltTime;
@@ -38,9 +40,18 @@ public class MovePlayer : MonoBehaviour {
 		offset = 0;
 		basePosition = new Vector3(0, 0, 0);
 		tiltTime = 0;
+		initSpeed = speed;
+		speed = initSpeed / 2;
 	}
 	
 	void Update () {
+		
+		if (WavesManager.status == Status.Rest) {
+			speed = initSpeed / 3;	
+		} else {
+			speed = initSpeed;
+		}
+		
 		time += Time.deltaTime;
 		basePosition += direction * Time.deltaTime;
 
@@ -48,18 +59,23 @@ public class MovePlayer : MonoBehaviour {
 		Quaternion rotation = Quaternion.Slerp(transform.rotation, newRotation, turnSpeed);
 		transform.rotation = rotation;
 		
-		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q)) {
+		float xTouch =  -1;
+		if (Application.platform == RuntimePlatform.Android && Input.touchCount == 1) {
+				xTouch =  Input.GetTouch(0).position.x;
+		}
+		
+		if ((xTouch >= 0 && xTouch < Screen.width / 2) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q)) {
 			offset -= offsetSpeed * Time.deltaTime;
 			tiltAngle -= tiltRotationSpeed * Time.deltaTime;
 			tiltTime += tiltAnimationSpeed * Time.deltaTime;
-		} else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
+		} else if ((xTouch >= 0 && xTouch >= Screen.width / 2) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
 			offset += offsetSpeed * Time.deltaTime;
 			tiltAngle += tiltRotationSpeed * Time.deltaTime;
 			tiltTime += tiltAnimationSpeed * Time.deltaTime;
 		} else {
 			tiltTime -= tiltAnimationSpeed * Time.deltaTime;	
 		}
-		
+
 		offset = Mathf.Clamp(offset, -maxOffset, maxOffset);
 		tiltAngle = Mathf.Clamp(tiltAngle, -maxTiltAngle, maxTiltAngle);
 		

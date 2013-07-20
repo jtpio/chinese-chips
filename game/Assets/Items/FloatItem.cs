@@ -24,6 +24,18 @@ public class FloatItem : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other) {
+		//Debug.Log ("collision between " + other.name + " and " + gameObject.name);
+		
+		if (other.name == "Player") {
+			
+			if (name == "Coin(Clone)") {
+				// do things
+			} else {
+				Destruction destr = other.GetComponent<Destruction>();
+				if (destr) destr.DestroyPart();
+			}
+		}
+		
 		Destroy(gameObject);
 	}
 	

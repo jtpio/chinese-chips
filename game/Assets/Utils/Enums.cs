@@ -5,4 +5,4 @@ public enum NodeType {Normal, Left, Right, PortalIn, PortalOut};
 
 public enum Status {Wave, Rest};
 
-public enum Item {Mine = 0, Turret, Laser, Coin};
+public enum Item {Mine = 0, Turret, Coin};

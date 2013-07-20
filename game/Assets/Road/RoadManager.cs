@@ -157,14 +157,17 @@ public class RoadManager : MonoBehaviour {
 	}
 	
 	protected void DropPanels(Transform roadStraight) {
-		Transform randomLeftPanel = roadStraight.FindChild("LeftPanel0"+Random.Range(1, 4));
-		if (randomLeftPanel) {
-			randomLeftPanel.gameObject.AddComponent<Throw>();
-		}
 		
-		Transform randomRightPanel = roadStraight.FindChild("RightPanel0"+Random.Range(1, 4));
-		if (randomRightPanel) {
-			randomRightPanel.gameObject.AddComponent<Throw>();
+		if (MathUtils.RandomChance(fallingRoadChance)) {
+			Transform randomLeftPanel = roadStraight.FindChild("LeftPanel0"+Random.Range(1, 4));
+			if (randomLeftPanel) {
+				randomLeftPanel.gameObject.AddComponent<Throw>();
+			}
+			
+			Transform randomRightPanel = roadStraight.FindChild("RightPanel0"+Random.Range(1, 4));
+			if (randomRightPanel) {
+				randomRightPanel.gameObject.AddComponent<Throw>();
+			}
 		}
 		
 		if (MathUtils.RandomChance(fallingRoadChance)) {
