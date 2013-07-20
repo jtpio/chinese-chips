@@ -10,10 +10,12 @@ public class RoadManager : MonoBehaviour {
 	public Transform roadTurnPrefab;
 	public Transform portalPrefab;
 	
+	// parameters
 	public int timeStep;
 	public int roadSegmentLength;
 	public int nbSegments;
 	public int yDelta;
+	public float waypointDistance;
 	
 	protected Settings settings;
 	protected MovePlayer movePlayer;
@@ -126,8 +128,8 @@ public class RoadManager : MonoBehaviour {
 	public void HandlePlayer() {
 		if (roadNodes.Count < 1) return;
 		Vector3 moveVector = playerNode.Value.position - movePlayer.basePosition;
-		float dist = 2.0f;
-		if (playerNode.Value.type == NodeType.Left || playerNode.Value.type == NodeType.Right) dist = 20.0f;
+		float dist = waypointDistance;
+		//if (playerNode.Value.type == NodeType.Left || playerNode.Value.type == NodeType.Right) dist = 20.0f;
 		if (moveVector.magnitude < dist) {
 			playerNode = playerNode.Next;
 			if (playerNode.Previous.Value.type == NodeType.PortalIn) {

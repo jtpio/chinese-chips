@@ -8,6 +8,9 @@ public class MovePlayer : MonoBehaviour {
 	public float speed;
 	public float sideSpeed;
 	public float turnSpeed;
+	public float maxTiltAngle;
+	public float tiltRotationSpeed;
+	public float tiltAnimationSpeed;
 	public bool invertTilt;
 	
 	// internals public
@@ -22,6 +25,10 @@ public class MovePlayer : MonoBehaviour {
 	protected RoadManager roadManager;
 	protected Transform ship;
 	
+	// tilt
+	protected float tiltAngle;
+	protected float tiltTime;
+	
 	void Start () {
 		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
 		ship = transform.FindChild("Ship");
@@ -29,6 +36,7 @@ public class MovePlayer : MonoBehaviour {
 		direction = transform.forward * speed;
 		offset = 0;
 		basePosition = new Vector3(0, 0, 0);
+		tiltTime = 0;
 	}
 	
 	void Update () {
@@ -43,17 +51,25 @@ public class MovePlayer : MonoBehaviour {
 		transform.rotation = rotation;
 		
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q)) {
-			offset -= sideSpeed;
+			offset -= sideSpeed * Time.deltaTime;
+			tiltAngle -= tiltRotationSpeed * Time.deltaTime;
+			tiltTime += tiltAnimationSpeed * Time.deltaTime;
+		} else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
+			offset += sideSpeed * Time.deltaTime;
+			tiltAngle += tiltRotationSpeed * Time.deltaTime;
+			tiltTime += tiltAnimationSpeed * Time.deltaTime;
+		} else {
+			tiltTime -= tiltAnimationSpeed * Time.deltaTime;	
 		}
 		
-		if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
-			offset += sideSpeed;
-		}
+		offset = Mathf.Clamp(offset, -30, 30);
+		tiltAngle = Mathf.Clamp(tiltAngle, -maxTiltAngle, maxTiltAngle);
 		
-		offset = Mathf.Clamp(offset, -20, 20);
+		tiltTime = Mathf.Clamp(tiltTime, 0, 1);
+		float tAngle = tiltAngle * Tween.Easing.EaseIn(tiltTime, Tween.EasingType.Sine);
 		
 		transform.position = basePosition + offset * transform.right + yOffset;
-		ship.transform.rotation = Quaternion.AngleAxis(((invertTilt)?-1:1) * offset, transform.forward) * transform.rotation;
+		ship.transform.rotation = Quaternion.AngleAxis(((invertTilt)?-1:1) * tAngle, transform.forward) * transform.rotation;
 		position = transform.position;
 	}
 	
