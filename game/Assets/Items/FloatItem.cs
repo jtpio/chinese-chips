@@ -9,16 +9,18 @@ public class FloatItem : MonoBehaviour {
 	public float lifeTime;
 	
 	protected float time;
+	protected Vector3 basePosition;
 
 	void Start () {
 		time = 0;
+		basePosition = transform.position;
 		StartCoroutine(WaitAndDie(lifeTime));
 	}
 	
 	void Update () {
 		time += Time.deltaTime * moveSpeed;
-		float yOffset = Mathf.PingPong(time, yMaxOffset) + yInitOffset;
-		transform.position = new Vector3(transform.position.x, yOffset, transform.position.z);
+		float yOffset = basePosition.y + Mathf.PingPong(time, yMaxOffset) + yInitOffset;
+		transform.position = new Vector3(basePosition.x, yOffset, basePosition.z);
 	}
 	
 	void OnTriggerEnter(Collider other) {

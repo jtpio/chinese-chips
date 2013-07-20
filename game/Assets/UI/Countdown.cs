@@ -4,8 +4,8 @@ using System.Collections;
 public class Countdown : MonoBehaviour {
 	
 	public GUIStyle style;
+	public int step;	
 	public int duration;
-	public int step;
 	
 	protected bool display;
 	protected string current;
@@ -27,9 +27,20 @@ public class Countdown : MonoBehaviour {
 		
 	}
 	
+	public void SetCountdownDuration(int duration) {
+		this.duration = duration;	
+	}
+	
+	public bool IsPlaying() {
+		return display;
+	}
+	
 	public void StartTimer(CallBack cb) {
-		//StopTimer();
 		this.callback = cb;
+		StartTimer();
+	}
+	
+	public void StartTimer() {
 		display = true;
 		StartCoroutine(WaitAndPrint(duration, step));
 	}
@@ -49,7 +60,7 @@ public class Countdown : MonoBehaviour {
 		current = "Wave!";
 		yield return new WaitForSeconds(step);
 		display = false;
-		callback();
+		if (callback != null) callback();
 	}
 	
 	void OnGUI () {

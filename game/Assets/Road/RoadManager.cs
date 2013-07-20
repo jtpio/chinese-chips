@@ -74,7 +74,7 @@ public class RoadManager : MonoBehaviour {
 			}
 			
 			bool turn = MathUtils.RandomBool();
-			if (turn) { // turn
+			if (turn) {
 				bool left = MathUtils.RandomBool();
 				Vector3 prefabOrientation = direction;
 				if (left) {
@@ -93,8 +93,8 @@ public class RoadManager : MonoBehaviour {
 				nodeTime += roadTileSize.z;
 			} else {
 				Transform inPortal = Instantiate(portalPrefab, spawningPoint, Quaternion.LookRotation(direction)) as Transform;
-				Node node = new Node(spawningPoint, direction, nodeTime, inPortal, NodeType.PortalIn);
-				roadNodes.AddLast(node);
+				Node inP = new Node(spawningPoint, direction, nodeTime, inPortal, NodeType.PortalIn);
+				roadNodes.AddLast(inP);
 				nbGenerated++;
 				direction = MathUtils.RandomTurn(direction);
 				StepForward(direction, roadTileSize);
@@ -102,8 +102,8 @@ public class RoadManager : MonoBehaviour {
 				// second portal with y offset
 				StepUpward(direction, roadTileSize);
 				Transform outPortal = Instantiate(portalPrefab, spawningPoint, Quaternion.LookRotation(direction)) as Transform;
-				node = new Node(spawningPoint, direction, nodeTime, outPortal, NodeType.PortalOut);
-				roadNodes.AddLast(node);
+				Node outP = new Node(spawningPoint, direction, nodeTime, outPortal, NodeType.PortalOut);
+				roadNodes.AddLast(outP);
 				nbGenerated++;
 				StepForward(direction, roadTileSize);
 				nodeTime += roadTileSize.z;
@@ -128,7 +128,11 @@ public class RoadManager : MonoBehaviour {
 		//if (playerNode.Value.type == NodeType.Left || playerNode.Value.type == NodeType.Right) dist = 20.0f;
 		if (moveVector.magnitude < dist) {
 			playerNode = playerNode.Next;
-			DropPanels(playerNode.Next.Value.transform);
+			
+			if (WavesManager.status == Status.Wave) {
+				DropPanels(playerNode.Next.Value.transform);
+			}
+			
 			if (playerNode.Previous.Value.type == NodeType.PortalIn) {
 				movePlayer.time = playerNode.Value.time;
 				movePlayer.SetPosition(playerNode.Value.position);
