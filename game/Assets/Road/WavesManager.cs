@@ -4,32 +4,36 @@ using Utils;
 
 public class WavesManager : MonoBehaviour {
 	
-	public int wavesPeriod;
-	public int nbBlocks;
-	public Transform blockPrefab;
+	// mine
+	public int nbMines;
+	public Vector3 yOffsetMine;
 	
+	// waves
+	public float wavesPeriod;
+	
+	// prefabs
+	public Transform minePrefab;
+	
+	protected float time;
+	protected float wavesThreshold;
 	protected Countdown countdown;
-	protected Timer timer;
+	protected RoadManager roadManager;
 	
 	void Start () {
+		time = 0;
+		wavesThreshold = wavesPeriod;
 		countdown = GameObject.Find("GameStuff").GetComponent<Countdown>();
-		timer = new Timer(wavesPeriod);
-	}
-	
-	void FloodBlocks() {
-		Vector3 pos = MovePlayer.position;
-		for (int i = 0; i < nbBlocks; i++) {
-			Vector3 blockPos = new Vector3(pos.x + 100 + Random.Range(25, 100), pos.y + 20, pos.z + Random.Range(-20, 20));
-			Transform block = Instantiate(blockPrefab, blockPos, Quaternion.identity) as Transform;
-			block.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.down * 10);
-		}
+		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
 	}
 	
 	void Update () {
-		if (timer.IsFinished()) {
-			countdown.StartTimer(new Countdown.CallBack(this.FloodBlocks));
-		} else {
-			timer.Update(Time.deltaTime);	
+		time += Time.deltaTime;
+		if (time > wavesThreshold) {
+			Vector3 spawningPos = roadManager.playerNode.Next.Value.position;
+			for (int i = 0; i < nbMines; i++) {
+				Instantiate(minePrefab, spawningPos + roadManager.playerNode.Next.Value.direction * i * 20 + yOffsetMine, Quaternion.identity);
+			}
+			wavesThreshold += wavesPeriod;
 		}
 	}
 }

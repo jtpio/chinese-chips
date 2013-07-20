@@ -16,6 +16,7 @@ public class RoadManager : MonoBehaviour {
 	public int nbSegments;
 	public int yDelta;
 	public float waypointDistance;
+	public float fallingRoadChance;
 	
 	protected Settings settings;
 	protected MovePlayer movePlayer;
@@ -25,7 +26,7 @@ public class RoadManager : MonoBehaviour {
 	protected float nodeTime;
 	protected Vector3 roadTileSize;
 	
-	protected LinkedListNode<Node> playerNode;
+	public LinkedListNode<Node> playerNode;
 	protected LinkedListNode<Node> middleNode;
 	
 	void Awake() {
@@ -68,12 +69,6 @@ public class RoadManager : MonoBehaviour {
 				Node node = new Node(spawningPoint, direction, nodeTime, transform, NodeType.Normal);
 				roadNodes.AddLast(node);
 				nbGenerated++;
-				//if (MathUtils.RandomBool()) transform.renderer.enabled = false;
-//				Destroy(transform.FindChild("LeftPanel0"+Random.Range(1, 4)).gameObject);
-//				Destroy(transform.FindChild("RightPanel0"+Random.Range(1, 4)).gameObject);
-//				transform.FindChild("LeftPanel0"+Random.Range(1, 4)).gameObject.AddComponent<Rigidbody>();
-//				transform.FindChild("RightPanel0"+Random.Range(1, 4)).gameObject.AddComponent<Rigidbody>();
-				//DropPanels(transform);
 				StepForward(direction, roadTileSize);
 				nodeTime += roadTileSize.z;
 			}
@@ -90,12 +85,10 @@ public class RoadManager : MonoBehaviour {
 					prefabOrientation = MathUtils.RotateRight(direction);
 				}
 				Transform transform = Instantiate(roadTurnPrefab, spawningPoint, Quaternion.LookRotation(prefabOrientation)) as Transform;
-				//transform.rotation = Quaternion.AngleAxis(180, Vector3.up);
 				NodeType type = (turn)?NodeType.Left:NodeType.Right;
 				Node node = new Node(spawningPoint, direction, nodeTime, transform, type);
 				roadNodes.AddLast(node);
 				nbGenerated++;
-				//if (MathUtils.RandomBool()) transform.renderer.enabled = false;
 				StepForward(direction, roadTileSize);
 				nodeTime += roadTileSize.z;
 			} else {
@@ -170,7 +163,7 @@ public class RoadManager : MonoBehaviour {
 			randomRightPanel.gameObject.AddComponent<Throw>();
 		}
 		
-		if (MathUtils.RandomBool()) {
+		if (MathUtils.RandomChance(fallingRoadChance)) {
 			roadStraight.gameObject.AddComponent<Fall>();
 		}
 		
