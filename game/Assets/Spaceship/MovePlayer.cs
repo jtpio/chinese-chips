@@ -68,6 +68,7 @@ public class MovePlayer : MonoBehaviour {
 		
 		transform.position = basePosition + offset * transform.right + yOffset;
 		ship.transform.rotation = Quaternion.AngleAxis(((invertTilt)?-1:1) * tAngle, transform.forward) * transform.rotation;
+		Camera.main.transform.rotation = Quaternion.AngleAxis(((invertTilt)?-1:1) * tAngle * 0.2f, transform.forward) * transform.rotation;
 		position = transform.position;
 	}
 	

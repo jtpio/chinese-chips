@@ -4,6 +4,7 @@ using System.Collections;
 public class FloatItem : MonoBehaviour {
 	
 	public float yMaxOffset;
+	public float yInitOffset;
 	public float moveSpeed;
 	public float lifeTime;
 	
@@ -16,7 +17,7 @@ public class FloatItem : MonoBehaviour {
 	
 	void Update () {
 		time += Time.deltaTime * moveSpeed;
-		float yOffset = Mathf.PingPong(time, yMaxOffset);
+		float yOffset = Mathf.PingPong(time, yMaxOffset) + yInitOffset;
 		transform.position = new Vector3(transform.position.x, yOffset, transform.position.z);
 	}
 	
