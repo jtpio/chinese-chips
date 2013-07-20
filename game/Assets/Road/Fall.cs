@@ -4,12 +4,16 @@ using Utils;
 
 public class Fall : MonoBehaviour {
 	
-	public float life;
+	public float maxAngle = 0.3f;
+	public float lifeDuration = 10.0f;
 	
 	protected Timer timer;
 	
 	void Start () {
-		timer = new Timer(life);	
+		transform.RotateAround(transform.forward, Random.Range(-maxAngle, maxAngle));
+		transform.gameObject.AddComponent<Rigidbody>();
+		
+		timer = new Timer(lifeDuration);
 	}
 	
 	void Update () {
@@ -17,5 +21,5 @@ public class Fall : MonoBehaviour {
 		if (timer.IsFinished()) {
 			Destroy(gameObject);
 		}
-	}	
+	}
 }

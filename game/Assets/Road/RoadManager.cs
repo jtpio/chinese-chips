@@ -71,6 +71,9 @@ public class RoadManager : MonoBehaviour {
 				//if (MathUtils.RandomBool()) transform.renderer.enabled = false;
 //				Destroy(transform.FindChild("LeftPanel0"+Random.Range(1, 4)).gameObject);
 //				Destroy(transform.FindChild("RightPanel0"+Random.Range(1, 4)).gameObject);
+//				transform.FindChild("LeftPanel0"+Random.Range(1, 4)).gameObject.AddComponent<Rigidbody>();
+//				transform.FindChild("RightPanel0"+Random.Range(1, 4)).gameObject.AddComponent<Rigidbody>();
+				//DropPanels(transform);
 				StepForward(direction, roadTileSize);
 				nodeTime += roadTileSize.z;
 			}
@@ -132,6 +135,7 @@ public class RoadManager : MonoBehaviour {
 		//if (playerNode.Value.type == NodeType.Left || playerNode.Value.type == NodeType.Right) dist = 20.0f;
 		if (moveVector.magnitude < dist) {
 			playerNode = playerNode.Next;
+			DropPanels(playerNode.Next.Value.transform);
 			if (playerNode.Previous.Value.type == NodeType.PortalIn) {
 				movePlayer.time = playerNode.Value.time;
 				movePlayer.SetPosition(playerNode.Value.position);
@@ -153,5 +157,22 @@ public class RoadManager : MonoBehaviour {
 			int nbNewParts = GenerateSegments();
 			ShiftMiddleNode(nbNewParts);
 		}
+	}
+	
+	protected void DropPanels(Transform roadStraight) {
+		Transform randomLeftPanel = roadStraight.FindChild("LeftPanel0"+Random.Range(1, 4));
+		if (randomLeftPanel) {
+			randomLeftPanel.gameObject.AddComponent<Throw>();
+		}
+		
+		Transform randomRightPanel = roadStraight.FindChild("RightPanel0"+Random.Range(1, 4));
+		if (randomRightPanel) {
+			randomRightPanel.gameObject.AddComponent<Throw>();
+		}
+		
+		if (MathUtils.RandomBool()) {
+			roadStraight.gameObject.AddComponent<Fall>();
+		}
+		
 	}
 }

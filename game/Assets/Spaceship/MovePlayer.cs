@@ -6,7 +6,8 @@ public class MovePlayer : MonoBehaviour {
 	
 	// parameters
 	public float speed;
-	public float sideSpeed;
+	public float offsetSpeed;
+	public float maxOffset;
 	public float turnSpeed;
 	public float maxTiltAngle;
 	public float tiltRotationSpeed;
@@ -40,22 +41,19 @@ public class MovePlayer : MonoBehaviour {
 	}
 	
 	void Update () {
-		
 		time += Time.deltaTime;
-		
 		basePosition += direction * Time.deltaTime;
-		//transform.Translate(delta * direction, Space.World);
 
 		Quaternion newRotation = Quaternion.LookRotation(direction);
 		Quaternion rotation = Quaternion.Slerp(transform.rotation, newRotation, turnSpeed);
 		transform.rotation = rotation;
 		
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q)) {
-			offset -= sideSpeed * Time.deltaTime;
+			offset -= offsetSpeed * Time.deltaTime;
 			tiltAngle -= tiltRotationSpeed * Time.deltaTime;
 			tiltTime += tiltAnimationSpeed * Time.deltaTime;
 		} else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
-			offset += sideSpeed * Time.deltaTime;
+			offset += offsetSpeed * Time.deltaTime;
 			tiltAngle += tiltRotationSpeed * Time.deltaTime;
 			tiltTime += tiltAnimationSpeed * Time.deltaTime;
 		} else {
