@@ -90,7 +90,11 @@ public class Destruction : MonoBehaviour {
 				mine.Play();	
 			}
 			
+			Scoring.multiplier = 0;
+			
 		} else {
+			if (Scoring.multiplier == 0) Scoring.multiplier = 1;
+			Scoring.multiplier *= 2;
 			coinSound.Play();
 		}
 		

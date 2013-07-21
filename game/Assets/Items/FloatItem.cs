@@ -7,6 +7,7 @@ public class FloatItem : MonoBehaviour {
 	public float yInitOffset;
 	public float moveSpeed;
 	public float lifeTime;
+	public bool follow;
 	
 	protected float time;
 	protected Vector3 basePosition;
@@ -18,6 +19,10 @@ public class FloatItem : MonoBehaviour {
 	}
 	
 	void Update () {
+		if (follow) {
+			basePosition.x = transform.position.x;
+			basePosition.z = transform.position.z;
+		}
 		time += Time.deltaTime * moveSpeed;
 		float yOffset = basePosition.y + Mathf.PingPong(time, yMaxOffset) + yInitOffset;
 		transform.position = new Vector3(basePosition.x, yOffset, basePosition.z);

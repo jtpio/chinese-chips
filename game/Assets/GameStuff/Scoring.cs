@@ -6,7 +6,10 @@ public class Scoring : MonoBehaviour {
 	// parameters
 	public GUIStyle style;
 	
+	public TextMesh scoreText;
+	
 	public static bool scoring;
+	public static int multiplier;
 	
 	protected int score;
 	protected float time;
@@ -24,12 +27,15 @@ public class Scoring : MonoBehaviour {
 			time += Time.deltaTime;
 			score = (int)Mathf.Round(time * 10);
 		}
+		
+		scoreText.text = score+"";
 	}
 	
+	/*
 	void OnGUI () {
 		GUI.Label(new Rect(0, 0, 100, 100), 
 			score+"", style
 		);
 	}
-	
+	*/
 }

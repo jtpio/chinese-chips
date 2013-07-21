@@ -58,7 +58,7 @@ public class Countdown : MonoBehaviour {
 			yield return new WaitForSeconds(step);
 			time -= step;
 		}
-		current = goText;
+		current = "Wave " + WavesManager.waveCounter;
 		yield return new WaitForSeconds(step);
 		display = false;
 		if (callback != null) callback();

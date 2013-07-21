@@ -26,6 +26,7 @@ public class WavesManager : MonoBehaviour {
 	// protected
 	protected float time;
 	protected float waveStartTime;
+	public static int waveCounter;
 	protected Countdown countdown;
 	protected RoadManager roadManager;
 	protected LinkedListNode<Node> lastPlayerNode;
@@ -33,6 +34,7 @@ public class WavesManager : MonoBehaviour {
 	void Start () {
 		time = 0;
 		waveStartTime = restDuration;
+		waveCounter = 1;
 		countdown = GameObject.Find("GameStuff").GetComponent<Countdown>();
 		countdown.SetCountdownDuration(countdownDuration);
 		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
@@ -85,6 +87,7 @@ public class WavesManager : MonoBehaviour {
 			waveStartTime = waveStartTime + waveDuration + restDuration;
 			status = Status.Rest;
 			Camera.main.fov = initFov;
+			waveCounter++;
 		}
 	}
 }
