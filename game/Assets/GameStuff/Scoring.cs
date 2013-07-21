@@ -30,12 +30,5 @@ public class Scoring : MonoBehaviour {
 		
 		scoreText.text = score+"";
 	}
-	
-	/*
-	void OnGUI () {
-		GUI.Label(new Rect(0, 0, 100, 100), 
-			score+"", style
-		);
-	}
-	*/
+
 }

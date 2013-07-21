@@ -131,7 +131,6 @@ public class RoadManager : MonoBehaviour {
 		if (roadNodes.Count < 1) return;
 		Vector3 moveVector = playerNode.Value.position - movePlayer.basePosition;
 		float dist = waypointDistance;
-		//if (playerNode.Value.type == NodeType.Left || playerNode.Value.type == NodeType.Right) dist = 20.0f;
 		if (moveVector.magnitude < dist) {
 			playerNode = playerNode.Next;
 			

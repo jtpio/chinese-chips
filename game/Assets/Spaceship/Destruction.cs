@@ -82,7 +82,7 @@ public class Destruction : MonoBehaviour {
 		bool toDestroy = true;
 		if (other.name != "Coin(Clone)") {
 			DestroyPart();
-			GetComponent<Explosion>().Explode();
+			GetComponent<Explosion>().Explode(true);
 			
 			if (other.name == "LaserBullet") {
 				toDestroy = false;
@@ -96,6 +96,7 @@ public class Destruction : MonoBehaviour {
 			if (Scoring.multiplier == 0) Scoring.multiplier = 1;
 			Scoring.multiplier *= 2;
 			coinSound.Play();
+			GetComponent<Explosion>().Explode(false);
 		}
 		
 		if (toDestroy) {

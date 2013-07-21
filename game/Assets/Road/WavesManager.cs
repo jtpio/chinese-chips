@@ -31,7 +31,13 @@ public class WavesManager : MonoBehaviour {
 	protected RoadManager roadManager;
 	protected LinkedListNode<Node> lastPlayerNode;
 	
+	AudioSource mainSong;
+	
 	void Start () {
+		
+		AudioSource[] sources = GetComponents<AudioSource>();
+		mainSong = sources[0];
+		
 		time = 0;
 		waveStartTime = restDuration;
 		waveCounter = 1;
@@ -41,6 +47,14 @@ public class WavesManager : MonoBehaviour {
 		lastPlayerNode = roadManager.playerNode;
 		status = Status.Rest;
 		initFov = Camera.main.fov;
+		
+		StartCoroutine(StartSongDelay(5));
+	}
+	
+	IEnumerator StartSongDelay(float delay) {
+		yield return new WaitForSeconds(delay);
+		mainSong.loop = true;
+		mainSong.Play();
 	}
 	
 	void Update () {
@@ -48,6 +62,8 @@ public class WavesManager : MonoBehaviour {
 		if (status == Status.GameOver) return;
 		
 		time += Time.deltaTime;
+		
+		itemsPerTile = waveCounter / 5 + 1;
 		
 		bool inWave = (time > waveStartTime) && (time < waveStartTime + waveDuration);
 		
@@ -63,7 +79,6 @@ public class WavesManager : MonoBehaviour {
 		if (inWave && lastPlayerNode != roadManager.playerNode) {
 			Camera.main.fov = speedFov;
 			Scoring.scoring = true;
-			//for (int i = 0; i < itemPrefabs.Length; i++) {
 			if (roadManager.playerNode.Next.Next.Value.type != NodeType.PortalIn && roadManager.playerNode.Next.Next.Value.type != NodeType.PortalOut) {
 				int nbItems = itemsPerTile;
 				int i = Random.Range(0, itemPrefabs.Length);
