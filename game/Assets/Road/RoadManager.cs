@@ -29,7 +29,13 @@ public class RoadManager : MonoBehaviour {
 	public LinkedListNode<Node> playerNode;
 	protected LinkedListNode<Node> middleNode;
 	
+	AudioSource portalSound;
+	
 	void Awake() {
+		
+		AudioSource[] sources = GetComponents<AudioSource>();
+		portalSound = sources[0];
+		
 		settings = GameObject.Find("GameStuff").GetComponent<Settings>();
 		movePlayer = GameObject.Find("Player").GetComponent<MovePlayer>();
 		roadTileSize = roadStraightPrefab.FindChild("baseSquare").renderer.bounds.size + new Vector3(0,0,10);
@@ -134,6 +140,7 @@ public class RoadManager : MonoBehaviour {
 			}
 			
 			if (playerNode.Previous.Value.type == NodeType.PortalIn) {
+				portalSound.Play();
 				movePlayer.time = playerNode.Value.time;
 				movePlayer.SetPosition(playerNode.Value.position);
 				movePlayer.InstantRotation(playerNode.Value.direction);

@@ -42,6 +42,9 @@ public class WavesManager : MonoBehaviour {
 	}
 	
 	void Update () {
+		
+		if (status == Status.GameOver) return;
+		
 		time += Time.deltaTime;
 		
 		bool inWave = (time > waveStartTime) && (time < waveStartTime + waveDuration);
@@ -63,8 +66,15 @@ public class WavesManager : MonoBehaviour {
 				int nbItems = itemsPerTile;
 				int i = Random.Range(0, itemPrefabs.Length);
 				Vector3 spawningPos = roadManager.playerNode.Next.Next.Value.position;
+				
 				for (int j = 0; j < nbItems; j++) {
-					Vector3 itemPos = spawningPos + new Vector3(Random.Range(-20f, 20f), 0, Random.Range(-20f, 20f));
+					Vector3 itemPos = spawningPos;
+					if (i == 1) { // turret
+						itemPos += new Vector3(MathUtils.RandomSign() * 23f, 0, MathUtils.RandomSign() * 23f);
+					} else {
+						itemPos += new Vector3(Random.Range(-20f, 20f), 0, Random.Range(-20f, 20f));
+					}
+					
 					Instantiate(itemPrefabs[i], itemPos, Quaternion.identity);
 				}
 			}

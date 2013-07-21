@@ -32,7 +32,15 @@ public class MovePlayer : MonoBehaviour {
 	protected float tiltAngle;
 	protected float tiltTime;
 	
+	AudioSource engineStart;
+	AudioSource engineSound;
+	
 	void Start () {
+		
+		AudioSource[] sources = GetComponents<AudioSource>();
+		engineSound = sources[2];
+		engineStart = sources[3];
+		
 		roadManager = GameObject.Find("RoadManager").GetComponent<RoadManager>();
 		ship = transform.FindChild("Ship");
 		time = 0;
@@ -41,13 +49,18 @@ public class MovePlayer : MonoBehaviour {
 		basePosition = new Vector3(0, 0, 0);
 		tiltTime = 0;
 		initSpeed = speed;
-		speed = initSpeed / 2;
+		speed = initSpeed / 1.5f;
+		
+		engineStart.Play();
+		engineSound.loop = true;
+		engineSound.Play();	
 	}
 	
-	void Update () {
-		
+	void Update () {	
 		if (WavesManager.status == Status.Rest) {
-			speed = initSpeed / 3;	
+			speed = initSpeed / 1.5f;
+		} else if (WavesManager.status == Status.GameOver) {
+			speed = initSpeed / 3;
 		} else {
 			speed = initSpeed;
 		}
@@ -60,20 +73,22 @@ public class MovePlayer : MonoBehaviour {
 		transform.rotation = rotation;
 		
 		float xTouch =  -1;
-		if (Application.platform == RuntimePlatform.Android && Input.touchCount == 1) {
+		if (WavesManager.status != Status.GameOver) {
+			if (Application.platform == RuntimePlatform.Android && Input.touchCount == 1) {
 				xTouch =  Input.GetTouch(0).position.x;
-		}
-		
-		if ((xTouch >= 0 && xTouch < Screen.width / 2) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q)) {
-			offset -= offsetSpeed * Time.deltaTime;
-			tiltAngle -= tiltRotationSpeed * Time.deltaTime;
-			tiltTime += tiltAnimationSpeed * Time.deltaTime;
-		} else if ((xTouch >= 0 && xTouch >= Screen.width / 2) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
-			offset += offsetSpeed * Time.deltaTime;
-			tiltAngle += tiltRotationSpeed * Time.deltaTime;
-			tiltTime += tiltAnimationSpeed * Time.deltaTime;
-		} else {
-			tiltTime -= tiltAnimationSpeed * Time.deltaTime;	
+			}
+			
+			if ((xTouch >= 0 && xTouch < Screen.width / 2) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q)) {
+				offset -= offsetSpeed * Time.deltaTime;
+				tiltAngle -= tiltRotationSpeed * Time.deltaTime;
+				tiltTime += tiltAnimationSpeed * Time.deltaTime;
+			} else if ((xTouch >= 0 && xTouch >= Screen.width / 2) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
+				offset += offsetSpeed * Time.deltaTime;
+				tiltAngle += tiltRotationSpeed * Time.deltaTime;
+				tiltTime += tiltAnimationSpeed * Time.deltaTime;
+			} else {
+				tiltTime -= tiltAnimationSpeed * Time.deltaTime;	
+			}
 		}
 
 		offset = Mathf.Clamp(offset, -maxOffset, maxOffset);

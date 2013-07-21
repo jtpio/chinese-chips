@@ -12,7 +12,14 @@ public class Destruction : MonoBehaviour {
 	
 	public Transform smokePrefab;
 	
+	public AudioSource coinSound;
+	public AudioSource mine;
+		
 	void Start () {
+		AudioSource[] sources = GetComponents<AudioSource>();
+		coinSound = sources[0];
+		mine = sources[1];
+		
 		ship = transform.FindChild("Ship");
 		jets = new List<string>();
 		doors = new List<string>();
@@ -33,19 +40,7 @@ public class Destruction : MonoBehaviour {
 	}
 	
 	void Update () {
-		
-		/*
-		if (MathUtils.RandomChance(10)) {
-			int randomChild = Random.Range(Mathf.Min (2, transform.childCount-1), transform.childCount);
-			Transform child = transform.GetChild(randomChild);
-			if (child.name != "group" && child.name != "joint1") {
-				if (!child.GetComponent<Throw>()) child.gameObject.AddComponent<Throw>();
-			}
-		}
-		*/
-		
-		
-		
+
 	}
 	
 	public void DestroyPart() {
@@ -74,7 +69,33 @@ public class Destruction : MonoBehaviour {
 					Transform roof = doorsChild.FindChild("Roof");
 					if (roof) Destroy(roof.gameObject);
 				}
+				
+				if (jets.Count == 0) {
+					WavesManager.status = Status.GameOver;	
+				}
+				
 			}
 		}
+	}
+	
+	void OnTriggerEnter(Collider other) {
+		bool toDestroy = true;
+		if (other.name != "Coin(Clone)") {
+			DestroyPart();
+			GetComponent<Explosion>().Explode();
+			
+			if (other.name == "LaserBullet") {
+				toDestroy = false;
+			} else {
+				mine.Play();	
+			}
+			
+		} else {
+			coinSound.Play();
+		}
+		
+		if (toDestroy) {
+			Destroy(other.gameObject);	
+		}		
 	}
 }

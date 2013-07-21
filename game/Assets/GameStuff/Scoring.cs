@@ -19,9 +19,11 @@ public class Scoring : MonoBehaviour {
 	
 	void Update () {
 		if (!scoring) return;
-
-		time += Time.deltaTime;
-		score = (int)Mathf.Round(time * 10);
+		
+		if (WavesManager.status != Status.GameOver) {
+			time += Time.deltaTime;
+			score = (int)Mathf.Round(time * 10);
+		}
 	}
 	
 	void OnGUI () {

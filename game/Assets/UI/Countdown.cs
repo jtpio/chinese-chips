@@ -6,6 +6,7 @@ public class Countdown : MonoBehaviour {
 	public GUIStyle style;
 	public int step;	
 	public int duration;
+	public string goText;
 	
 	protected bool display;
 	protected string current;
@@ -57,7 +58,7 @@ public class Countdown : MonoBehaviour {
 			yield return new WaitForSeconds(step);
 			time -= step;
 		}
-		current = "Wave!";
+		current = goText;
 		yield return new WaitForSeconds(step);
 		display = false;
 		if (callback != null) callback();

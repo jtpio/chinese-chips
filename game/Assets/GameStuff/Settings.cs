@@ -15,6 +15,14 @@ public class Settings : MonoBehaviour {
 			if (Input.GetKey(KeyCode.Escape)) {
 				Application.Quit();	
 			}
+			
+			if (Input.touchCount == 5) {
+				Application.LoadLevel(Application.loadedLevel);
+			}
+		}
+		
+		if (Input.GetKey(KeyCode.R)) {
+			Application.LoadLevel(Application.loadedLevel);
 		}
 	}
 }

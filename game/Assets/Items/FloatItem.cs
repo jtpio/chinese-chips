@@ -23,22 +23,6 @@ public class FloatItem : MonoBehaviour {
 		transform.position = new Vector3(basePosition.x, yOffset, basePosition.z);
 	}
 	
-	void OnTriggerEnter(Collider other) {
-		//Debug.Log ("collision between " + other.name + " and " + gameObject.name);
-		
-		if (other.name == "Player") {
-			
-			if (name == "Coin(Clone)") {
-				// do things
-			} else {
-				Destruction destr = other.GetComponent<Destruction>();
-				if (destr) destr.DestroyPart();
-			}
-		}
-		
-		Destroy(gameObject);
-	}
-	
 	IEnumerator WaitAndDie(float lifeTime) {
 		yield return new WaitForSeconds(lifeTime);
 		Destroy(gameObject);
