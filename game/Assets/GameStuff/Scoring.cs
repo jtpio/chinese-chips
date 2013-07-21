@@ -24,8 +24,9 @@ public class Scoring : MonoBehaviour {
 		if (!scoring) return;
 		
 		if (WavesManager.status != Status.GameOver) {
-			time += Time.deltaTime;
-			score = (int)Mathf.Round(time * 10);
+			int temp = (int)(Time.deltaTime * 100);
+			multiplier = Mathf.Clamp(multiplier, 1, 16);
+			score += temp * multiplier;
 		}
 		
 		scoreText.text = score+"";

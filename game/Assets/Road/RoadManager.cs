@@ -80,6 +80,10 @@ public class RoadManager : MonoBehaviour {
 			}
 			
 			bool turn = MathUtils.RandomBool();
+			bool temp = !(roadNodes.Last.Value.type == roadNodes.Last.Previous.Value.type && (roadNodes.Last.Value.type == NodeType.Left || roadNodes.Last.Value.type == NodeType.Left));
+			
+			turn &= temp;
+			
 			if (turn) {
 				bool left = MathUtils.RandomBool();
 				Vector3 prefabOrientation = direction;
@@ -124,7 +128,7 @@ public class RoadManager : MonoBehaviour {
 	}
 	
 	protected void StepUpward(Vector3 direction, Vector3 size) {
-		spawningPoint += MathUtils.RandomSign() * yDelta * Vector3.up;
+		spawningPoint += Random.Range (1,4) * MathUtils.RandomSign() * yDelta * Vector3.up;
 	}
 	
 	public void HandlePlayer() {

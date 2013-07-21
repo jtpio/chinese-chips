@@ -13,6 +13,13 @@ public class MenuMusic : MonoBehaviour {
 	}
 	
 	void Update () {
+		
+		if (Application.platform == RuntimePlatform.Android && Input.touchCount >= 1) {
+			Application.LoadLevel(1);
+		} else if (Input.GetKey(KeyCode.S) ) {
+			// press escape to skip
+			Application.LoadLevel(1);
+		}
 	
 	}
 }
