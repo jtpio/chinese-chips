@@ -1,7 +1,7 @@
 Smuggler's End - No More Sweden 2013
 ========
 
-This is the game that we made during the No More Sweden 2013 *game jam* in Malmö, Sweden.
+This is the game that we made during the No More Sweden 2013 **game jam** in Malmö, Sweden.
 
 You can find our entry page on Unicorn7:
 [http://www.unicorn7.org/games/game/195/](http://www.unicorn7.org/games/game/195/)
